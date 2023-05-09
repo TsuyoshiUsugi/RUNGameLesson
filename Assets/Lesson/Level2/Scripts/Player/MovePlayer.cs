@@ -15,8 +15,8 @@ public class MovePlayer : MonoBehaviour
     [SerializeField] Vector3 _goal = new Vector3(0, 1, 52.5f);
     [SerializeField] int _verticalSpeed = 100;
     [SerializeField] int _HorizontalSpeed = 100;
-    [SerializeField] float _leftLimit = 0;
-    [SerializeField] float _rightLimit = 0;
+    [SerializeField] float _leftLimit = -10;
+    [SerializeField] float _rightLimit = 10;
 
     Vector3 _direction = new Vector3();
 
@@ -62,6 +62,14 @@ public class MovePlayer : MonoBehaviour
         else if (horizontal == -1)
         {
             _rigidBody.AddForce(-Vector3.right * _verticalSpeed);
+        }
+
+        if (transform.position.x < _leftLimit || _rightLimit < transform.position.x)
+        {
+            Vector3 newPosition = transform.position.x < _leftLimit ?
+                new Vector3(_leftLimit, transform.position.y, transform.position.z)
+                : new Vector3(_rightLimit, transform.position.y, transform.position.z);
+            transform.position = newPosition;
         }
     }
 }
