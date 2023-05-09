@@ -13,7 +13,10 @@ public class MovePlayer : MonoBehaviour
 
     [Header("ê›íËíl")]
     [SerializeField] Vector3 _goal = new Vector3(0, 1, 52.5f);
-    [SerializeField] int _speed = 100;
+    [SerializeField] int _verticalSpeed = 100;
+    [SerializeField] int _HorizontalSpeed = 100;
+    [SerializeField] float _leftLimit = 0;
+    [SerializeField] float _rightLimit = 0;
 
     Vector3 _direction = new Vector3();
 
@@ -25,14 +28,7 @@ public class MovePlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (transform.position.z > _goal.z)
-        {
-            StopObj();
-        }
-        else if (transform.position.z < _goal.z)
-        {
-            AutoMoveObj();
-        }
+        AutoMoveObj();
     }
 
     /// <summary>
@@ -40,13 +36,16 @@ public class MovePlayer : MonoBehaviour
     /// </summary>
     void AutoMoveObj()
     {
-        _rigidBody.velocity = _direction * _speed * Time.deltaTime;
-    }
-
-    void StopObj()
-    {
-        _rigidBody.velocity = Vector3.zero;
-        transform.position = _goal;
+        //ÉSÅ[ÉãÉâÉCÉìÇâzÇ¶ÇΩÇÁé~Ç‹ÇÈ
+        if (transform.position.z > _goal.z)
+        {
+            _rigidBody.velocity = Vector3.zero;
+            transform.position = new Vector3(transform.position.x, _goal.y, _goal.z);
+        }
+        else if (transform.position.z < _goal.z)
+        {
+            _rigidBody.velocity = _direction * _verticalSpeed * Time.deltaTime;
+        }
     }
 
     /// <summary>
@@ -57,12 +56,12 @@ public class MovePlayer : MonoBehaviour
         //âE
         if (horizontal == 1)
         {
-            _rigidBody.AddForce(Vector3.right * _speed);
+            _rigidBody.AddForce(Vector3.right * _verticalSpeed);
         }
         //ç∂
         else if (horizontal == -1)
         {
-            _rigidBody.AddForce(-Vector3.right * _speed);
+            _rigidBody.AddForce(-Vector3.right * _verticalSpeed);
         }
     }
 }
