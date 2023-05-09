@@ -770,4 +770,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidBody: {fileID: 2058299080}
   _goal: {x: 0, y: 1, z: 52.5}
-  _speed: 100
+  _verticalSpeed: 100
+  _HorizontalSpeed: 100
+  _leftLimit: -9.5
+  _rightLimit: 9.5
