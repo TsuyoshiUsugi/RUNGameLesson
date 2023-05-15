@@ -4,20 +4,17 @@ using UnityEngine;
 using UniRx;
 
 /// <summary>
-/// ランゲームでプレイヤーが取得するオブジェクトを生成する
+/// オブジェクトの生成を管理する
 /// </summary>
-public class ObjInstantiater : MonoBehaviour
+public class ObjectManager : MonoBehaviour
 {
     [Header("設定値")]
     [SerializeField] float _fieldLength = 100;
     [SerializeField] int _generateNum = 10;
+    [SerializeField] Vector3 _generateStartPoint = new Vector3();
     [SerializeField] List<GameObject> _Obstacles;
     int _leftLimit = -10;
     int _rightLimit = 10;
-
-    //レーン数は３つ
-    [SerializeField] Vector3 _generateStartPoint = new Vector3();
-    
 
     // Start is called before the first frame update
     void Start()
@@ -37,8 +34,6 @@ public class ObjInstantiater : MonoBehaviour
         for (int i = 0; i < _generateNum; i++)
         {
             var obj = Instantiate(_Obstacles[0], _generateStartPoint, Quaternion.identity);
-
-            obj.GetComponent<FieldObject>().OnGetPoint.AsObservable();
 
             _generateStartPoint = new Vector3(
                 Random.Range(_leftLimit, _rightLimit)

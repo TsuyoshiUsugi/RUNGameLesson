@@ -22,6 +22,7 @@ public class FieldObject : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (OnGetPoint != null) OnGetPoint();
-        this.gameObject.SetActive(false);
+        ScoreManager.Instance.AddScore();
+        gameObject.SetActive(false);
     }
 }
