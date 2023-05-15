@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 /// <summary>
 /// ランゲームでプレイヤーが取得するオブジェクトを生成する
@@ -11,12 +12,12 @@ public class ObjInstantiater : MonoBehaviour
     [SerializeField] float _fieldLength = 100;
     [SerializeField] int _generateNum = 10;
     [SerializeField] List<GameObject> _Obstacles;
+    int _leftLimit = -10;
+    int _rightLimit = 10;
+
     //レーン数は３つ
-    [SerializeField]　List<Vector3> _generateStartPoint = new List<Vector3> { 
-        new Vector3(0, 0, 0),
-        new Vector3(0, 0, 0),
-        new Vector3(0, 0, 0),
-    };
+    [SerializeField] Vector3 _generateStartPoint = new Vector3();
+    
 
     // Start is called before the first frame update
     void Start()
@@ -32,15 +33,18 @@ public class ObjInstantiater : MonoBehaviour
         //生成間隔
         var dir = _fieldLength / _generateNum;
 
-        //横
-        for (int i = 0; i < _generateStartPoint.Count; i++)
+        //生成処理
+        for (int i = 0; i < _generateNum; i++)
         {
-            //縦
-            for (int j = 0; j < _generateNum; j++)
-            {
-                Instantiate(_Obstacles[0], _generateStartPoint[i], Quaternion.identity);
-                _generateStartPoint[i] = new Vector3(_generateStartPoint[i].x, _generateStartPoint[i].y, _generateStartPoint[i].z + dir);
-            }
+            var obj = Instantiate(_Obstacles[0], _generateStartPoint, Quaternion.identity);
+
+            obj.GetComponent<FieldObject>().OnGetPoint.AsObservable();
+
+            _generateStartPoint = new Vector3(
+                Random.Range(_leftLimit, _rightLimit)
+                , _generateStartPoint.y
+                , _generateStartPoint.z + dir);
         }
+
     }
 }
