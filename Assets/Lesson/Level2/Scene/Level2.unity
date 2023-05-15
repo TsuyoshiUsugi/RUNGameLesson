@@ -426,7 +426,7 @@ GameObject:
   - component: {fileID: 753144395}
   - component: {fileID: 753144394}
   m_Layer: 0
-  m_Name: ObjInstantiater
+  m_Name: ObjManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -445,10 +445,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _fieldLength: 100
-  _generateNum: 10
+  _generateObjNum: 10
   _generateStartPoint: {x: 0, y: 1, z: -50.5}
   _Obstacles:
   - {fileID: 7978882270257847456, guid: 76f63922a318a804baa9018092a1bbff, type: 3}
+  _consecutiveGenerationNum: 3
 --- !u!4 &753144395
 Transform:
   m_ObjectHideFlags: 0
@@ -1261,7 +1262,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidBody: {fileID: 2058299080}
   _goal: {x: 0, y: 1, z: 52.5}
-  _verticalSpeed: 100
+  _verticalSpeed: 500
   _HorizontalSpeed: 100
   _leftLimit: -9.5
   _rightLimit: 9.5
