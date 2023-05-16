@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class Gravity : MonoBehaviour
 {
-    [SerializeField] Vector3 _groundPos = new Vector3();
+    float _groundHeight = 0;
     Vector3 _gravity = new Vector3(0, 9.8f, 0);
 
     private void FixedUpdate()
     {
-        this.transform.position -= _gravity;
+        this.transform.position -= _gravity * Time.deltaTime;
 
-        if (transform.position.y <= _groundPos.y)
+        if (transform.position.y <= _groundHeight)
         {
-            this.transform.position = _groundPos;
+            this.transform.position = new Vector3(transform.position.x, _groundHeight, transform.position.z);
         }
         
     }
