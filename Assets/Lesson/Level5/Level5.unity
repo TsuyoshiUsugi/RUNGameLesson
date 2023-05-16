@@ -394,6 +394,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 096db36132b7d69468df134b4d5b13b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _bullet: {fileID: 1882406567535224579, guid: 01b7a49f31bdef540b3e4f6566848d5d, type: 3}
+  _isJumping: 0
 --- !u!114 &529916999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,7 +408,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dbd0ea87ee067047a6b74c2510cbe09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _groundPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1899411874
 GameObject:
   m_ObjectHideFlags: 0

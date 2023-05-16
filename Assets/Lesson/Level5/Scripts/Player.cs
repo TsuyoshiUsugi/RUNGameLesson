@@ -6,17 +6,36 @@ public class Player : MonoBehaviour
 {
     [SerializeField] GameObject _bullet;
     float _speed = 0.1f;
+    Gravity _gravity;
 
     //ジャンプ関連
-    float _jumpHeight = 0.1f; //どれくらいの高さまで飛ぶか
+    float _jumpHeight = 1.5f; //どれくらいの高さまで飛ぶか
     float _jumpTime = 0.5f;　//どのくらいの時間飛ぶか
     float _jumpTimer = 0f;  //ジャンプしてからどれくらいの間飛んでいるか
     [SerializeField] bool _isJumping;
+    int _maxJumpNum = 2;
+    [SerializeField] int _currentJumpNum = 0;
+
+    private void Start()
+    {
+        TryGetComponent(out Gravity gravity);
+        _gravity = gravity;
+    }
 
     // Update is called once per frame
     void Update()
     {
         GetInput();
+
+        OnGround();
+    }
+
+    private void OnGround()
+    {
+        if (transform.position.y <= _gravity.GroundHeight)
+        {
+            _currentJumpNum = 0;
+        }
     }
 
     void GetInput()
@@ -36,17 +55,16 @@ public class Player : MonoBehaviour
             Move(true);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !_isJumping)
+        if (Input.GetKeyDown(KeyCode.Space) && _currentJumpNum < _maxJumpNum)
         {
             Jump();
+            _currentJumpNum++;
         }
 
         if (_isJumping)
         {
             PerformJump();
         }
-
-
     }
 
     void Shot()
@@ -70,6 +88,7 @@ public class Player : MonoBehaviour
     {
         _isJumping = true;
         _jumpTimer = 0f;
+
     }
 
     void PerformJump()
@@ -85,6 +104,7 @@ public class Player : MonoBehaviour
         else
         {
             _isJumping = false;
-        }
+
+        } 
     }
 }
