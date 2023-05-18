@@ -9,8 +9,8 @@ public class Player : MonoBehaviour
     Gravity _gravity;
 
     //ジャンプ関連
-    float _jumpHeight = 1.5f; //どれくらいの高さまで飛ぶか
-    float _jumpTime = 0.5f;　//どのくらいの時間飛ぶか
+    [SerializeField] float _jumpHeight = 1.5f; //どれくらいの高さまで飛ぶか
+    [SerializeField] float _jumpTime = 0.5f;　//どのくらいの時間飛ぶか
     float _jumpTimer = 0f;  //ジャンプしてからどれくらいの間飛んでいるか
     [SerializeField] bool _isJumping;
     int _maxJumpNum = 2;
@@ -99,7 +99,7 @@ public class Player : MonoBehaviour
         {
             float jumpProgress = _jumpTimer / _jumpTime;
             var verticalDistance = Mathf.Sin(jumpProgress * Mathf.PI) * _jumpHeight;
-            transform.position += new Vector3(0, verticalDistance, 0);
+            transform.position += new Vector3(0, verticalDistance, 0) * Time.deltaTime;
         }
         else
         {
