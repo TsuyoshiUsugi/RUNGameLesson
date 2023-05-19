@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IHit
 {
-    [SerializeField] GameObject _bullet;
+    [SerializeField] float _hp = 5;
     float _speed = 0.1f;
+    
+    [SerializeField] GameObject _bullet;
     Gravity _gravity;
 
     //ƒWƒƒƒ“ƒvŠÖ˜A
@@ -20,6 +23,7 @@ public class Player : MonoBehaviour
     {
         TryGetComponent(out Gravity gravity);
         _gravity = gravity;
+        ServiceLoacator.Register(this);
     }
 
     // Update is called once per frame
@@ -69,7 +73,8 @@ public class Player : MonoBehaviour
 
     void Shot()
     {
-        Instantiate(_bullet, transform.position, transform.rotation);
+        var bullet = Instantiate(_bullet, transform.position, transform.rotation);
+        //bullet.GetComponent<Bullet>().InitializedBullet(_player.gameObject, Vector3.left);
     }
 
     void Move(bool right)
@@ -106,5 +111,10 @@ public class Player : MonoBehaviour
             _isJumping = false;
 
         } 
+    }
+
+    public void Hit(int damage)
+    {
+        _hp -= damage;
     }
 }
