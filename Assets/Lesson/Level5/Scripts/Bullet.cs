@@ -92,6 +92,7 @@ public class Bullet : MonoBehaviour, ICollision
 
     /// <summary>
     /// 自オジェクトが丸で当たるオブジェクトが矩形の時の接触判定
+    /// ここでは円の半径のなかに矩形の円に一番近い座標があるかどうかで判定している
     /// </summary>
     /// <param name="otherObjects"></param>
     void CircleCollision(List<GameObject> otherObjects) 
@@ -104,6 +105,8 @@ public class Bullet : MonoBehaviour, ICollision
             if (obj == null) continue;
 
             var otherObjPos = obj.transform.position;
+
+            //ここで円の座標から矩形の座標を引いているのは、矩形からの相対位置を求めるため
             var circleLocalPos = transform.position - otherObjPos;
 
             //ここはキャッシュすべき
@@ -113,7 +116,9 @@ public class Bullet : MonoBehaviour, ICollision
             var halfWidth = width / 2;
             var halfheight = height / 2;
 
+            //矩形のXの最短座標
             var nearestX = Mathf.Clamp(circleLocalPos.x, -halfWidth, halfWidth);
+            //矩形のYの最短座標
             var nearestY = Mathf.Clamp(circleLocalPos.y, -halfheight, halfheight);
 
             float distanceX = circleLocalPos.x - nearestX;
