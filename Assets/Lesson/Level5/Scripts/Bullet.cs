@@ -55,8 +55,12 @@ public class Bullet : MonoBehaviour
 
     private void CollisionEnter(List<GameObject> otherObjects)
     {
+        if (otherObjects == null) return;
+
         foreach (var obj in otherObjects)
         {
+            if (obj == null) continue;
+
             var otherObjPos = obj.transform.position;
             var width = obj.GetComponent<SpriteRenderer>().bounds.size.x;
             var height = obj.GetComponent<SpriteRenderer>().bounds.size.y;

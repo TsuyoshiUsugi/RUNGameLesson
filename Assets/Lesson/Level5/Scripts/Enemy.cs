@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 using Cysharp.Threading.Tasks;
-using TMPro;
+using System.Threading;
 
 /// <summary>
 /// 敵オブジェクトに付ける行動用スクリプト
@@ -12,17 +12,25 @@ using TMPro;
 /// </summary>
 public class Enemy : MonoBehaviour, IHit
 {
-    [SerializeField] Player _player;
+    Player _player;
     [SerializeField] float _detectionDistance = 4;
     [SerializeField] GameObject _bullet;
     [SerializeField] float _hp = 5;
     float _shootDur = 1;
     BoolReactiveProperty _isShoot = new BoolReactiveProperty();
- 
+    CancellationTokenSource _cancellationTokenSource;
+
+    void Awake()
+    {
+        ServiceLoacator.Register(this);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         _isShoot.Where(x => x == true).Subscribe(_ => Shoot()).AddTo(this);
+        _cancellationTokenSource = new CancellationTokenSource();
+        _player = ServiceLoacator.ResolveAll<Player>()[0];
     }
 
     private void Update()
@@ -33,18 +41,29 @@ public class Enemy : MonoBehaviour, IHit
         }
     }
 
-    async void Shoot()
+    async UniTaskVoid Shoot()
     {
-        var bullet = Instantiate(_bullet, transform.position, transform.rotation);
-        var targetList = new List<GameObject>() { _player.gameObject};
-        bullet.GetComponent<Bullet>().InitializedBullet(targetList, Vector3.left);
-        await UniTask.Delay(TimeSpan.FromSeconds(_shootDur));
-        Shoot();
+        while (!_cancellationTokenSource.Token.IsCancellationRequested)
+        {
+            var bullet = Instantiate(_bullet, transform.position, transform.rotation);
+            var targetList = new List<GameObject>() { _player.gameObject };
+            bullet.GetComponent<Bullet>().InitializedBullet(targetList, Vector3.left);
+            await UniTask.Delay(TimeSpan.FromSeconds(_shootDur), cancellationToken: _cancellationTokenSource.Token);
+        }
     }
 
     public void Hit(int damage)
     {
         _hp -= damage;
-        if (_hp <= 0) Destroy(this.gameObject);
+        if (_hp <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    void OnDestroy()
+    {
+        ServiceLoacator.Unregister(this);
+        _cancellationTokenSource.Cancel();
     }
 }

@@ -5,32 +5,68 @@ using UnityEngine;
 
 public class ServiceLoacator
 {
-    static readonly Dictionary<Type, object> _container;
+    static readonly Dictionary<Type, List<object>> _container;
 
-    static ServiceLoacator() => _container = new Dictionary<Type, object>();
+    static ServiceLoacator() => _container = new Dictionary<Type, List<object>>();
 
     /// <summary>
     /// インスタンス取得
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T Resolve<T>() => (T)_container[typeof(T)];
+    public static List<T> ResolveAll<T>()
+    {
+        Type type = typeof(T);
+
+        if (_container.ContainsKey(type))
+        {
+            List<object> instances = _container[type];
+            List<T> typedInstances = new List<T>();
+
+            foreach (var instance in instances)
+            {
+                typedInstances.Add((T)instance);
+            }
+
+            return typedInstances;
+        }
+
+        return new List<T>();
+    }
 
     /// <summary>
     /// インスタンス登録
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="instance"></param>
-    public static void Register<T>(T instance) => _container[typeof(T)] = instance;
-
-    /// <summary>
-    /// インスタンスの登録解除
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="instance"></param>
-    public static void UnRegister<T>(T instance)
+    /// <param name="service"></param>
+    public static void Register<T>(T service)
     {
-        if (Equals(_container[typeof(T)], instance)) _container.Remove(typeof(T));
+        Type type = typeof(T);
+
+        if (!_container.ContainsKey(type))
+        {
+            _container[type] = new List<object>();
+             
+        }
+
+        _container[type].Add(service);
+    }
+
+    public static void Unregister<T>(T service)
+    {
+        Type type = typeof(T);
+
+        if (_container.ContainsKey(type))
+        {
+            List<object> instances = _container[type];
+            instances.Remove(service);
+
+            // 参照が空になった場合はエントリ自体を削除
+            if (instances.Count == 0)
+            {
+                _container.Remove(type);
+            }   
+        }
     }
 
     /// <summary>

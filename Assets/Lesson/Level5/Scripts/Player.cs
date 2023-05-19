@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class Player : MonoBehaviour, IHit
     
     [SerializeField] GameObject _bullet;
     Gravity _gravity;
+    List<Enemy> _enemy;
 
     //ÉWÉÉÉìÉvä÷òA
     [SerializeField] float _jumpHeight = 1.5f; //Ç«ÇÍÇ≠ÇÁÇ¢ÇÃçÇÇ≥Ç‹Ç≈îÚÇ‘Ç©
@@ -19,11 +21,17 @@ public class Player : MonoBehaviour, IHit
     int _maxJumpNum = 2;
     [SerializeField] int _currentJumpNum = 0;
 
+    void Awake()
+    {
+        ServiceLoacator.Register(this);
+    }
+
     private void Start()
     {
         TryGetComponent(out Gravity gravity);
         _gravity = gravity;
-        ServiceLoacator.Register(this);
+
+        
     }
 
     // Update is called once per frame
@@ -74,7 +82,14 @@ public class Player : MonoBehaviour, IHit
     void Shot()
     {
         var bullet = Instantiate(_bullet, transform.position, transform.rotation);
-        //bullet.GetComponent<Bullet>().InitializedBullet(_player.gameObject, Vector3.left);
+        var enemies = new List<GameObject>();
+        _enemy = ServiceLoacator.ResolveAll<Enemy>();
+        foreach (var enemy in _enemy)
+        {
+            enemies.Add(enemy.gameObject);
+        }
+
+        bullet.GetComponent<Bullet>().InitializedBullet(enemies, Vector3.right);
     }
 
     void Move(bool right)
@@ -116,5 +131,10 @@ public class Player : MonoBehaviour, IHit
     public void Hit(int damage)
     {
         _hp -= damage;
+    }
+
+    private void OnDisable()
+    {
+        ServiceLoacator.Register(this);
     }
 }
