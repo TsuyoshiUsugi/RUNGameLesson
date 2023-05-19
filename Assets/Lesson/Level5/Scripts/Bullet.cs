@@ -8,7 +8,7 @@ using UnityEngine;
 /// 生成時に他クラスから移動方向を指定し、動く
 /// 指定した時間で消える
 /// </summary>
-public class Bullet : MonoBehaviour
+public class Bullet : MonoBehaviour, ICollision
 {
     int _damage = 1;
     public int Damage => _damage;
@@ -20,28 +20,33 @@ public class Bullet : MonoBehaviour
     float _height = 0;
     List<GameObject> _targets;
 
-    private void Start()
+    /// <summary>
+    /// このクラスのオブジェクト生成時に他クラスから呼ばれる。
+    /// 引数に、接触判定を行うべきオブジェクトのリストと弾の進行方向を取る
+    /// </summary>
+    /// <param name="targets"></param>
+    /// <param name="dir"></param>
+    public void InitializedBullet(List<GameObject> targets, Vector3 dir)
     {
         _width = GetComponent<SpriteRenderer>().bounds.size.x;
         _height = GetComponent<SpriteRenderer>().bounds.size.y;
-    }
-
-    public void InitializedBullet(List<GameObject> targets, Vector3 dir)
-    {
         _width = GetComponent<SpriteRenderer>().bounds.size.x;
         _height = GetComponent<SpriteRenderer>().bounds.size.y;
         _targets = targets;
         _dir = dir;
     }
 
-    // Update is called once per frame
     void Update()
     {
         CountDeleteTime();
         Move();
-        CollisionEnter(_targets);
+        //CollisionEnter(_targets);
+        CircleCollision(_targets);
     }
 
+    /// <summary>
+    /// 時間で消滅する処理
+    /// </summary>
     void CountDeleteTime()
     {
         _timdToDestroy -= Time.deltaTime;
@@ -53,7 +58,11 @@ public class Bullet : MonoBehaviour
         transform.position += _dir * _speed;
     }
 
-    private void CollisionEnter(List<GameObject> otherObjects)
+    /// <summary>
+    /// お互いが矩形の時の接触検知関数
+    /// </summary>
+    /// <param name="otherObjects"></param>
+    public void CollisionEnter(List<GameObject> otherObjects)
     {
         if (otherObjects == null) return;
 
@@ -62,6 +71,8 @@ public class Bullet : MonoBehaviour
             if (obj == null) continue;
 
             var otherObjPos = obj.transform.position;
+
+            //ここはキャッシュすべき
             var width = obj.GetComponent<SpriteRenderer>().bounds.size.x;
             var height = obj.GetComponent<SpriteRenderer>().bounds.size.y;
 
@@ -72,6 +83,44 @@ public class Bullet : MonoBehaviour
             var heightSum = Mathf.Abs(_height - height);
 
             if (xDir <= widthSum && yDir <= heightSum)
+            {
+                obj.gameObject.GetComponent<IHit>().Hit(_damage);
+                Destroy(this.gameObject);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 自オジェクトが丸で当たるオブジェクトが矩形の時の接触判定
+    /// </summary>
+    /// <param name="otherObjects"></param>
+    void CircleCollision(List<GameObject> otherObjects) 
+    {
+        if (otherObjects == null) return;
+
+
+        foreach (var obj in otherObjects)
+        {
+            if (obj == null) continue;
+
+            var otherObjPos = obj.transform.position;
+            var circleLocalPos = transform.position - otherObjPos;
+
+            //ここはキャッシュすべき
+            var width = obj.GetComponent<SpriteRenderer>().bounds.size.x;
+            var height = obj.GetComponent<SpriteRenderer>().bounds.size.y;
+
+            var halfWidth = width / 2;
+            var halfheight = height / 2;
+
+            var nearestX = Mathf.Clamp(circleLocalPos.x, -halfWidth, halfWidth);
+            var nearestY = Mathf.Clamp(circleLocalPos.y, -halfheight, halfheight);
+
+            float distanceX = circleLocalPos.x - nearestX;
+            float distanceY = circleLocalPos.y - nearestY;
+            float distance = Mathf.Sqrt(distanceX * distanceX + distanceY * distanceY);
+
+            if (distance < _width / 2)
             {
                 obj.gameObject.GetComponent<IHit>().Hit(_damage);
                 Destroy(this.gameObject);
