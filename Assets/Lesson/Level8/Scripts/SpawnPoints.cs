@@ -5,7 +5,7 @@ using UniRx;
 
 /// <summary>
 /// 敵の生成地点のスクリプト
-/// 指定された秒数おきに、敵がまだ生きているかを確認し、死んでいたらスポーン
+/// 指定された秒数おきに、生成した敵がまだ生きているかを確認し、死んでいたらスポーン
 /// </summary>
 public class SpawnPoints : MonoBehaviour
 {
@@ -20,12 +20,12 @@ public class SpawnPoints : MonoBehaviour
             .Subscribe(_ => Spawn()).AddTo(this);
     }
 
-    // Update is called once per frame
     void Spawn()
     {
         if (_cashEnemy == null)
         {
-            Instantiate(_enemy);
+            var obj = Instantiate(_enemy, transform.position, Quaternion.identity);
+            _cashEnemy = obj;
         }
     }
 }
