@@ -57,13 +57,22 @@ public class Bullet : MonoBehaviour, IHit
         if (_bulletType == BulletType.Box)
         {
             var target = MyCollision.CollisionEnter(this.gameObject, _targets);
-            target.ForEach(obj => obj.GetComponent<IHit>().Hit(_damage));
+            foreach (var obj in _targets)
+            {
+                Debug.Log(obj.name);
+                obj.GetComponent<IHit>().Hit(_damage);
+            }
             Destroy(this.gameObject);
         }
         else
         {
             var target = MyCollision.CircleCollision(this.gameObject ,_targets);
-            target.ForEach(obj => obj.GetComponent<IHit>().Hit(_damage));
+
+            foreach (var obj in _targets)
+            {
+                Debug.Log(obj.name);
+                obj.GetComponent<IHit>().Hit(_damage);
+            }
             Destroy(this.gameObject);
         }
     }

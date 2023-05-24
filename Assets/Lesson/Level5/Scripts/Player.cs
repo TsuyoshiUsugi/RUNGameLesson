@@ -12,6 +12,7 @@ public class Player : MonoBehaviour, IHit
 
     [SerializeField] GameObject _mouseCursor;
     [SerializeField] GameObject _bullet;
+    [SerializeField] GameObject _laserGun;
     Gravity _gravity;
     List<Enemy> _enemy;
 
@@ -140,6 +141,8 @@ public class Player : MonoBehaviour, IHit
         float angle = Mathf.Atan2(_mousePos.x, _mousePos.y);
         Vector3 eulerAngle = new Vector3(0f, 0f, angle * Mathf.Rad2Deg);
         transform.rotation = Quaternion.Euler(-eulerAngle);
+
+        _laserGun.transform.rotation = this.transform.rotation;
     }
 
     void ShowCursor()
