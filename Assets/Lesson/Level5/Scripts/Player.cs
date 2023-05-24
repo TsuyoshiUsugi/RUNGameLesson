@@ -96,7 +96,6 @@ public class Player : MonoBehaviour, IHit
         }
 
         var dir = (_mouseCursor.transform.position - transform.position).normalized;
-        Debug.Log(dir);
         bullet.GetComponent<Bullet>().InitializedBullet(enemies, dir);
     }
 
