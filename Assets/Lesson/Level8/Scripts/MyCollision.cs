@@ -61,7 +61,6 @@ public struct MyCollision
             var circleLocalPos = myObject.transform.position - otherObjPos;
 
             var myObjWidth = myObject.GetComponent<SpriteRenderer>().bounds.size.x;
-            var myObjHeight = myObject.GetComponent<SpriteRenderer>().bounds.size.y;
             var width = obj.GetComponent<SpriteRenderer>().bounds.size.x;
             var height = obj.GetComponent<SpriteRenderer>().bounds.size.y;
 

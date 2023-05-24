@@ -10,7 +10,7 @@ using UnityEngine;
 public class LaserGun : MonoBehaviour
 {
     [SerializeField] GameObject _laser;
-    [SerializeField] float _damage = 3;
+    [SerializeField] int _damage = 3;
 
     [SerializeField] float _onKeyDownTimer = 0;
     float _showLaserTime = 0.2f;
@@ -34,6 +34,12 @@ public class LaserGun : MonoBehaviour
     IEnumerator ShootLaser()
     {
         _laser.SetActive(true);
+        var target = new List<GameObject>();
+        ServiceLoacator.ResolveAll<Enemy>().ForEach(enemy => target.Add(enemy.gameObject));
+        ServiceLoacator.ResolveAll<Bullet>().ForEach(bullet => target.Add(bullet.gameObject));
+
+        var hit = MyCollision.CollisionEnter(_laser.gameObject, target);
+        hit.ForEach(hit => hit.GetComponent<IHit>().Hit(_damage));
         yield return new WaitForSeconds(_showLaserTime);
         _laser.SetActive(false);
     }

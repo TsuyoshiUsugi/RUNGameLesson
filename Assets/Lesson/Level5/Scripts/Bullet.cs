@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 
@@ -25,6 +26,11 @@ public class Bullet : MonoBehaviour, IHit
     {
         Circle,
         Box,
+    }
+
+    void Awake()
+    {
+        ServiceLoacator.Register(this);
     }
 
     /// <summary>
@@ -79,5 +85,10 @@ public class Bullet : MonoBehaviour, IHit
     public void Hit(int damage)
     {
         Destroy(this.gameObject);
+    }
+
+    void OnDestroy()
+    {
+        ServiceLoacator.Unregister(this);
     }
 }
