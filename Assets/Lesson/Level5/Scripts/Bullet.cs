@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ using UnityEngine;
 /// 生成時に他クラスから移動方向を指定し、動く
 /// 指定した時間で消える
 /// </summary>
-public class Bullet : MonoBehaviour, ICollision
+public class Bullet : MonoBehaviour, IHit
 {
     int _damage = 1;
     public int Damage => _damage;
@@ -19,6 +20,18 @@ public class Bullet : MonoBehaviour, ICollision
     float _width = 0;
     float _height = 0;
     List<GameObject> _targets;
+    [SerializeField] BulletType _bulletType = BulletType.Circle;
+
+    enum BulletType
+    {
+        Circle,
+        Box,
+    }
+
+    void Awake()
+    {
+        ServiceLoacator.Register(this);
+    }
 
     /// <summary>
     /// このクラスのオブジェクト生成時に他クラスから呼ばれる。
@@ -40,8 +53,28 @@ public class Bullet : MonoBehaviour, ICollision
     {
         CountDeleteTime();
         Move();
-        //CollisionEnter(_targets);
-        CircleCollision(_targets);
+
+        if (_bulletType == BulletType.Box)
+        {
+            var target = MyCollision.CollisionEnter(this.gameObject, _targets);
+            foreach (var obj in _targets)
+            {
+                Debug.Log(obj.name);
+                obj.GetComponent<IHit>().Hit(_damage);
+            }
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            var target = MyCollision.CircleCollision(this.gameObject ,_targets);
+
+            foreach (var obj in _targets)
+            {
+                Debug.Log(obj.name);
+                obj.GetComponent<IHit>().Hit(_damage);
+            }
+            Destroy(this.gameObject);
+        }
     }
 
     /// <summary>
@@ -58,78 +91,13 @@ public class Bullet : MonoBehaviour, ICollision
         transform.position += _dir * _speed;
     }
 
-    /// <summary>
-    /// お互いが矩形の時の接触検知関数
-    /// </summary>
-    /// <param name="otherObjects"></param>
-    public void CollisionEnter(List<GameObject> otherObjects)
+    public void Hit(int damage)
     {
-        if (otherObjects == null) return;
-
-        foreach (var obj in otherObjects)
-        {
-            if (obj == null) continue;
-
-            var otherObjPos = obj.transform.position;
-
-            //ここはキャッシュすべき
-            var width = obj.GetComponent<SpriteRenderer>().bounds.size.x;
-            var height = obj.GetComponent<SpriteRenderer>().bounds.size.y;
-
-            var xDir = Mathf.Abs(this.transform.position.x - otherObjPos.x);
-            var yDir = Mathf.Abs(this.transform.position.y - otherObjPos.y);
-
-            var widthSum = Mathf.Abs(_width - width);
-            var heightSum = Mathf.Abs(_height - height);
-
-            if (xDir <= widthSum && yDir <= heightSum)
-            {
-                obj.gameObject.GetComponent<IHit>().Hit(_damage);
-                Destroy(this.gameObject);
-            }
-        }
+        Destroy(this.gameObject);
     }
 
-    /// <summary>
-    /// 自オジェクトが丸で当たるオブジェクトが矩形の時の接触判定
-    /// ここでは円の半径のなかに矩形の円に一番近い座標があるかどうかで判定している
-    /// </summary>
-    /// <param name="otherObjects"></param>
-    void CircleCollision(List<GameObject> otherObjects) 
+    void OnDestroy()
     {
-        if (otherObjects == null) return;
-
-
-        foreach (var obj in otherObjects)
-        {
-            if (obj == null) continue;
-
-            var otherObjPos = obj.transform.position;
-
-            //ここで円の座標から矩形の座標を引いているのは、矩形からの相対位置を求めるため
-            var circleLocalPos = transform.position - otherObjPos;
-
-            //ここはキャッシュすべき
-            var width = obj.GetComponent<SpriteRenderer>().bounds.size.x;
-            var height = obj.GetComponent<SpriteRenderer>().bounds.size.y;
-
-            var halfWidth = width / 2;
-            var halfheight = height / 2;
-
-            //矩形のXの最短座標
-            var nearestX = Mathf.Clamp(circleLocalPos.x, -halfWidth, halfWidth);
-            //矩形のYの最短座標
-            var nearestY = Mathf.Clamp(circleLocalPos.y, -halfheight, halfheight);
-
-            float distanceX = circleLocalPos.x - nearestX;
-            float distanceY = circleLocalPos.y - nearestY;
-            float distance = Mathf.Sqrt(distanceX * distanceX + distanceY * distanceY);
-
-            if (distance < _width / 2)
-            {
-                obj.gameObject.GetComponent<IHit>().Hit(_damage);
-                Destroy(this.gameObject);
-            }
-        }
+        ServiceLoacator.Unregister(this);
     }
 }

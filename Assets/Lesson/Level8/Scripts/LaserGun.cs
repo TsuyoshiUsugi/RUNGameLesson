@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using System.Xml.Linq;
+=======
+>>>>>>> origin/master
 using UniRx;
 using UnityEngine;
 
@@ -20,10 +23,13 @@ public class LaserGun : MonoBehaviour
     void Start()
     {
         _laser.SetActive(false);
+<<<<<<< HEAD
 
         var myObjWidth = _laser.GetComponent<Transform>().localScale.x;
         var myObjHeight = _laser.GetComponent<Transform>().localScale.y;
         Debug.Log($"H{myObjHeight} W{myObjWidth}");
+=======
+>>>>>>> origin/master
     }
 
     // Update is called once per frame
