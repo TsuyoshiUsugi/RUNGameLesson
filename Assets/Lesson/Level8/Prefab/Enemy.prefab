@@ -98,3 +98,5 @@ MonoBehaviour:
   _detectionDistance: 4
   _bullet: {fileID: 5328368329373452871, guid: feaefc9f16d83f1498311c7c93dc4da9, type: 3}
   _hp: 5
+  _type: 1
+  _moveSpeed: 1

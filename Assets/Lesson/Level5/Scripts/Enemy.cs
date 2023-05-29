@@ -5,6 +5,7 @@ using UnityEngine;
 using UniRx;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// 敵オブジェクトに付ける行動用スクリプト
@@ -16,9 +17,15 @@ public class Enemy : MonoBehaviour, IHit
     [SerializeField] float _detectionDistance = 4;
     [SerializeField] GameObject _bullet;
     [SerializeField] float _hp = 5;
+    [SerializeField] int _damage = 10;
+    [SerializeField] EnemyType _type = EnemyType.Shoot;
+    [SerializeField] float _moveSpeed = 1;
+
+    Vector3 _dir = Vector3.zero;
     float _shootDur = 1;
     BoolReactiveProperty _isShoot = new BoolReactiveProperty();
     CancellationTokenSource _cancellationTokenSource;
+    List<GameObject> _playerObj = new List<GameObject>();
 
     enum EnemyType
     {
@@ -34,17 +41,40 @@ public class Enemy : MonoBehaviour, IHit
     // Start is called before the first frame update
     void Start()
     {
-        _isShoot.Where(x => x == true).Subscribe(_ => Shoot()).AddTo(this);
-        _cancellationTokenSource = new CancellationTokenSource();
+        if (_type == EnemyType.Shoot)
+        {
+            _isShoot.Where(x => x == true).Subscribe(_ => Shoot()).AddTo(this);
+            _cancellationTokenSource = new CancellationTokenSource();
+        }
         _player = ServiceLoacator.ResolveAll<Player>()[0];
+        _playerObj.Add(ServiceLoacator.ResolveAll<Player>()[0].gameObject);
     }
 
     private void Update()
     {
+
         if (this.transform.position.x - _player.transform.position.x <= _detectionDistance)
         {
-            _isShoot.Value = true;
+            if (_type == EnemyType.Shoot) _isShoot.Value = true;
+
+            if (_type == EnemyType.Move) MoveAttack();
         }
+    }
+
+    void MoveAttack()
+    {
+        if (_dir == Vector3.zero) _dir = _player.transform.position - this.transform.position;
+        
+
+        var target = MyCollision.CircleCollision(this.gameObject, _playerObj);
+
+        foreach (var obj in target)
+        {
+            Debug.Log(obj.name);
+            obj.GetComponent<IHit>().Hit(_damage, this.transform.position);
+        }
+
+        transform.position += _dir * _moveSpeed * Time.deltaTime;
     }
 
     async UniTaskVoid Shoot()
@@ -58,7 +88,7 @@ public class Enemy : MonoBehaviour, IHit
         }
     }
 
-    public void Hit(int damage)
+    public void Hit(int damage, Vector3 dir)
     {
         _hp -= damage;
         if (_hp <= 0)
@@ -70,6 +100,7 @@ public class Enemy : MonoBehaviour, IHit
     void OnDestroy()
     {
         ServiceLoacator.Unregister(this);
-        _cancellationTokenSource.Cancel();
+
+        if (_cancellationTokenSource != null) _cancellationTokenSource.Cancel();
     }
 }

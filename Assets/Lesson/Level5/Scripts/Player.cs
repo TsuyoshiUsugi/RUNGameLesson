@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : MonoBehaviour, IHit
 {
@@ -13,6 +12,10 @@ public class Player : MonoBehaviour, IHit
     [SerializeField] GameObject _mouseCursor;
     [SerializeField] GameObject _bullet;
     [SerializeField] GameObject _laserGun;
+
+    [Header("ノックバック")]
+    [SerializeField] float _knockBackPow = 1;
+    [SerializeField] int _knockBackFrame = 8;
     Gravity _gravity;
     List<Enemy> _enemy;
 
@@ -141,7 +144,7 @@ public class Player : MonoBehaviour, IHit
         float angle = Mathf.Atan2(_mousePos.y - transform.position.y, _mousePos.x - transform.position.x);
         Vector3 eulerAngle = new Vector3(0f, 0f, angle * Mathf.Rad2Deg);
         transform.eulerAngles = eulerAngle ;
-        transform.rotation = Quaternion.Euler(-eulerAngle);
+        transform.rotation = Quaternion.Euler(eulerAngle);
 
         _laserGun.transform.rotation = this.transform.rotation;
     }
@@ -155,13 +158,28 @@ public class Player : MonoBehaviour, IHit
         _mouseCursor.transform.position = mouseWorldPos;
     }
 
-    public void Hit(int damage)
+    public void Hit(int damage, Vector3 dir)
     {
         _hp -= damage;
+        StartCoroutine(nameof(KnockBack), dir);
+    }
+
+    IEnumerator KnockBack(Vector3 dir)
+    {
+        for (int i = 0; i < _knockBackFrame; i++)
+        {
+            this.transform.position += (transform.position - dir).normalized * _knockBackPow * Time.deltaTime;
+            yield return null;
+        }
     }
 
     private void OnDisable()
     {
         ServiceLoacator.Register(this);
+    }
+
+    void OnBecameInvisible()
+    {
+        Destroy(this.gameObject);
     }
 }

@@ -62,10 +62,10 @@ public class Bullet : MonoBehaviour, IHit
             var target = MyCollision.CollisionEnter(this.gameObject, _targets);
 
 
-            foreach (var obj in _targets)
+            foreach (var obj in target)
             {
                 Debug.Log(obj.name);
-                obj.GetComponent<IHit>().Hit(_damage);
+                obj.GetComponent<IHit>().Hit(_damage, transform.position);
             }
             Destroy(this.gameObject);
         }
@@ -73,10 +73,10 @@ public class Bullet : MonoBehaviour, IHit
         {
             var target = MyCollision.CircleCollision(this.gameObject ,_targets);
 
-            foreach (var obj in _targets)
+            foreach (var obj in target)
             {
                 Debug.Log(obj.name);
-                obj.GetComponent<IHit>().Hit(_damage);
+                obj.GetComponent<IHit>().Hit(_damage, transform.position);
             }
             Destroy(this.gameObject);
         }
@@ -96,7 +96,7 @@ public class Bullet : MonoBehaviour, IHit
         transform.position += _dir * _speed;
     }
 
-    public void Hit(int damage)
+    public void Hit(int damage, Vector3 dir)
     {
         Destroy(this.gameObject);
     }

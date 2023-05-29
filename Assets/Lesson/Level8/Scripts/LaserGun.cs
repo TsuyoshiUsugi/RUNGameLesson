@@ -44,7 +44,7 @@ public class LaserGun : MonoBehaviour
         ServiceLoacator.ResolveAll<Bullet>().ForEach(bullet => target.Add(bullet.gameObject));
 
         var hit = MyCollision.CollisionEnter(_laser.gameObject, target);
-        hit.ForEach(hit => hit.GetComponent<IHit>().Hit(_damage));
+        hit.ForEach(hit => hit.GetComponent<IHit>().Hit(_damage, transform.position));
         yield return new WaitForSeconds(_showLaserTime);
         _laser.SetActive(false);
     }
