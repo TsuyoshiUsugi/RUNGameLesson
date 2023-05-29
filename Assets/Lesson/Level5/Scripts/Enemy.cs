@@ -27,6 +27,9 @@ public class Enemy : MonoBehaviour, IHit
     CancellationTokenSource _cancellationTokenSource;
     List<GameObject> _playerObj = new List<GameObject>();
 
+    private readonly int _knockBackFrame = 8;
+    int _knockBackPow = 1;
+
     enum EnemyType
     {
         Shoot,
@@ -70,7 +73,6 @@ public class Enemy : MonoBehaviour, IHit
 
         foreach (var obj in target)
         {
-            Debug.Log(obj.name);
             obj.GetComponent<IHit>().Hit(_damage, this.transform.position);
         }
 
@@ -91,9 +93,23 @@ public class Enemy : MonoBehaviour, IHit
     public void Hit(int damage, Vector3 dir)
     {
         _hp -= damage;
+
+        StartCoroutine(nameof(KnockBack), dir);
+
         if (_hp <= 0)
         {
             Destroy(this.gameObject);
+        }
+    }
+
+
+    IEnumerator KnockBack(Vector3 dir)
+    {
+
+        for (int i = 0; i < _knockBackFrame; i++)
+        {
+            this.transform.position += (transform.position - dir).normalized * _knockBackPow * Time.deltaTime;
+            yield return null;
         }
     }
 

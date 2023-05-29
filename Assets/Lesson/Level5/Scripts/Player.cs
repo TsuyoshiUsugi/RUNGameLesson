@@ -18,6 +18,7 @@ public class Player : MonoBehaviour, IHit
     [SerializeField] int _knockBackFrame = 8;
     Gravity _gravity;
     List<Enemy> _enemy;
+    bool _isKnockBack = false;
 
     //ÉWÉÉÉìÉvä÷òA
     [SerializeField] float _jumpHeight = 1.5f; //Ç«ÇÍÇ≠ÇÁÇ¢ÇÃçÇÇ≥Ç‹Ç≈îÚÇ‘Ç©
@@ -160,17 +161,22 @@ public class Player : MonoBehaviour, IHit
 
     public void Hit(int damage, Vector3 dir)
     {
+        if (_isKnockBack) return;
         _hp -= damage;
+
+        _isKnockBack = true;
         StartCoroutine(nameof(KnockBack), dir);
     }
 
     IEnumerator KnockBack(Vector3 dir)
     {
+
         for (int i = 0; i < _knockBackFrame; i++)
         {
             this.transform.position += (transform.position - dir).normalized * _knockBackPow * Time.deltaTime;
             yield return null;
         }
+        _isKnockBack = false;
     }
 
     private void OnDisable()
