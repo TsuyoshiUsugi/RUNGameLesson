@@ -19,7 +19,7 @@ public class Bullet : MonoBehaviour, IHit
     Vector3 _dir = Vector3.right;
     float _width = 0;
     float _height = 0;
-    List<GameObject> _targets;
+    List<GameObject> _targets = new List<GameObject>();
     [SerializeField] BulletType _bulletType = BulletType.Circle;
 
     enum BulletType
@@ -54,9 +54,14 @@ public class Bullet : MonoBehaviour, IHit
         CountDeleteTime();
         Move();
 
+        if (_targets == null) return;
+
         if (_bulletType == BulletType.Box)
         {
+            
             var target = MyCollision.CollisionEnter(this.gameObject, _targets);
+
+
             foreach (var obj in _targets)
             {
                 Debug.Log(obj.name);
