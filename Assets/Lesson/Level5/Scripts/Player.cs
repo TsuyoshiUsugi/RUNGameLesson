@@ -8,7 +8,7 @@ public class Player : MonoBehaviour, IHit
 {
     float _hp = 5;
     float _speed = 0.1f;
-    Vector3 _mousePos = new Vector3();
+    [SerializeField] Vector3 _mousePos = new Vector3();
 
     [SerializeField] GameObject _mouseCursor;
     [SerializeField] GameObject _bullet;
@@ -138,16 +138,18 @@ public class Player : MonoBehaviour, IHit
 
     void Rotate()
     {
-        float angle = Mathf.Atan2(_mousePos.x, _mousePos.y);
+        float angle = Mathf.Atan2(_mousePos.y - transform.position.y, _mousePos.x - transform.position.x);
         Vector3 eulerAngle = new Vector3(0f, 0f, angle * Mathf.Rad2Deg);
-        transform.rotation = Quaternion.Euler(-eulerAngle);
+        transform.eulerAngles = eulerAngle ;
     }
 
     void ShowCursor()
     {
-        var _mouseCursorPos = Camera.main.ScreenToWorldPoint(_mousePos);
-        _mouseCursorPos.z = 0;
-        _mouseCursor.transform.position = _mouseCursorPos;
+        Vector3 mouseScreenPos = _mousePos;
+        mouseScreenPos.z = -Camera.main.transform.position.z;
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
+        mouseWorldPos.z = 0;
+        _mouseCursor.transform.position = mouseWorldPos;
     }
 
     public void Hit(int damage)

@@ -20,6 +20,12 @@ public class Enemy : MonoBehaviour, IHit
     BoolReactiveProperty _isShoot = new BoolReactiveProperty();
     CancellationTokenSource _cancellationTokenSource;
 
+    enum EnemyType
+    {
+        Shoot,
+        Move,
+    }
+
     void Awake()
     {
         ServiceLoacator.Register(this);
