@@ -56,23 +56,26 @@ public class Bullet : MonoBehaviour, IHit
 
         if (_targets == null) return;
 
+        CheckHit();
+    }
+
+    private void CheckHit()
+    {
         if (_bulletType == BulletType.Box)
         {
-            
             var target = MyCollision.CollisionEnter(this.gameObject, _targets);
 
-
-            foreach (var obj in target)
-            {
-                Debug.Log(obj.name);
-                obj.GetComponent<IHit>().Hit(_damage, transform.position);
-            }
-            Destroy(this.gameObject);
+            CallHit(target);
         }
         else
         {
-            var target = MyCollision.CircleCollision(this.gameObject ,_targets);
+            var target = MyCollision.CircleCollision(this.gameObject, _targets);
 
+            CallHit(target);
+        }
+
+        void CallHit(List<GameObject> target)
+        {
             foreach (var obj in target)
             {
                 Debug.Log(obj.name);
