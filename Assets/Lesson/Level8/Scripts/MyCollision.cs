@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-<<<<<<< HEAD
-using UnityEngine.UIElements;
-=======
->>>>>>> origin/master
+using UnityEngine.UI;
 
 public struct MyCollision
 {
@@ -24,17 +21,10 @@ public struct MyCollision
 
             var otherObjPos = obj.transform.position;
 
-<<<<<<< HEAD
             var myObjWidth = myObject.GetComponent<Transform>().localScale.x;
             var myObjHeight = myObject.GetComponent<Transform>().localScale.y;
             var width = obj.GetComponent<Transform>().localScale.x;
             var height = obj.GetComponent<Transform>().localScale.y;
-=======
-            var myObjWidth = myObject.GetComponent<SpriteRenderer>().bounds.size.x;
-            var myObjHeight = myObject.GetComponent<SpriteRenderer>().bounds.size.y;
-            var width = obj.GetComponent<SpriteRenderer>().bounds.size.x;
-            var height = obj.GetComponent<SpriteRenderer>().bounds.size.y;
->>>>>>> origin/master
 
             var xDir = Mathf.Abs(myObject.transform.position.x - otherObjPos.x);
             var yDir = Mathf.Abs(myObject.transform.position.y - otherObjPos.y);
