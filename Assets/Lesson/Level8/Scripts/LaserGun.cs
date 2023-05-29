@@ -15,7 +15,8 @@ public class LaserGun : MonoBehaviour
 
     [SerializeField] float _onKeyDownTimer = 0;
     float _showLaserTime = 0.2f;
-
+    float _hitStopTime = 0.25f;
+ 
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +30,7 @@ public class LaserGun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         Shoot();
     }
 
@@ -45,6 +47,17 @@ public class LaserGun : MonoBehaviour
 
         var hit = MyCollision.CollisionEnter(_laser.gameObject, target);
         hit.ForEach(hit => hit.GetComponent<IHit>().Hit(_damage, transform.position));
+
+        foreach (var obj in hit)
+        {
+            obj.GetComponent<IHit>().Hit(_damage, transform.position);
+
+            if (obj.GetComponent<Enemy>())
+            {
+                ServiceLoacator.ResolveAll<IMovable>().ForEach(enemy => enemy.Stop(_hitStopTime));
+            }
+        }
+
         yield return new WaitForSeconds(_showLaserTime);
         _laser.SetActive(false);
     }

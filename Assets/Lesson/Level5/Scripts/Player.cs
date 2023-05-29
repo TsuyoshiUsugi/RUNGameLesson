@@ -170,7 +170,6 @@ public class Player : MonoBehaviour, IHit
 
     IEnumerator KnockBack(Vector3 dir)
     {
-
         for (int i = 0; i < _knockBackFrame; i++)
         {
             this.transform.position += (transform.position - dir).normalized * _knockBackPow * Time.deltaTime;

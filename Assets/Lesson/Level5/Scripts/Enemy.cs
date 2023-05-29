@@ -11,7 +11,7 @@ using static UnityEngine.GraphicsBuffer;
 /// 敵オブジェクトに付ける行動用スクリプト
 /// プレイヤーとの距離がX以下になると画面←弾を撃[つ
 /// </summary>
-public class Enemy : MonoBehaviour, IHit
+public class Enemy : MonoBehaviour, IHit, IMovable
 {
     Player _player;
     [SerializeField] float _detectionDistance = 4;
@@ -21,13 +21,17 @@ public class Enemy : MonoBehaviour, IHit
     [SerializeField] EnemyType _type = EnemyType.Shoot;
     [SerializeField] float _moveSpeed = 1;
 
+    bool _isHit = false;
+    float _laserHitStopTime = 0.25f;
+    float _bulletHitStopTime = 0.08f;
+
     Vector3 _dir = Vector3.zero;
     float _shootDur = 1;
     BoolReactiveProperty _isShoot = new BoolReactiveProperty();
     CancellationTokenSource _cancellationTokenSource;
     List<GameObject> _playerObj = new List<GameObject>();
 
-    private readonly int _knockBackFrame = 8;
+    int _knockBackFrame = 8;
     int _knockBackPow = 1;
 
     enum EnemyType
@@ -55,6 +59,7 @@ public class Enemy : MonoBehaviour, IHit
 
     private void Update()
     {
+        if (_isHit) return;
 
         if (this.transform.position.x - _player.transform.position.x <= _detectionDistance)
         {
@@ -118,5 +123,17 @@ public class Enemy : MonoBehaviour, IHit
         ServiceLoacator.Unregister(this);
 
         if (_cancellationTokenSource != null) _cancellationTokenSource.Cancel();
+    }
+
+    public void Stop(float time)
+    {
+        _isHit = true;
+        StartCoroutine(nameof(HitStop), time);
+    }
+
+    IEnumerator HitStop(float time)
+    {
+        yield return new WaitForSeconds(time);
+        _isHit = false;
     }
 }

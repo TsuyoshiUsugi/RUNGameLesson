@@ -9,18 +9,21 @@ using UnityEngine;
 /// 生成時に他クラスから移動方向を指定し、動く
 /// 指定した時間で消える
 /// </summary>
-public class Bullet : MonoBehaviour, IHit
+public class Bullet : MonoBehaviour, IHit, IMovable
 {
     int _damage = 1;
     public int Damage => _damage;
     float _speed = 0.1f;
     float _timdToDestroy = 3;
 
+    float _hitStopTime = 0.08f;
     Vector3 _dir = Vector3.right;
     float _width = 0;
     float _height = 0;
     List<GameObject> _targets = new List<GameObject>();
     [SerializeField] BulletType _bulletType = BulletType.Circle;
+
+    bool _isHit = false;
 
     enum BulletType
     {
@@ -51,8 +54,10 @@ public class Bullet : MonoBehaviour, IHit
 
     void Update()
     {
+        if (_isHit) return;
+
         CountDeleteTime();
-        Move();
+        MovePos();
 
         if (_targets == null) return;
 
@@ -80,6 +85,11 @@ public class Bullet : MonoBehaviour, IHit
             {
                 Debug.Log(obj.name);
                 obj.GetComponent<IHit>().Hit(_damage, transform.position);
+
+                if (obj.GetComponent<Enemy>())
+                {
+                    ServiceLoacator.ResolveAll<IMovable>().ForEach(enemy => enemy.Stop(_hitStopTime));
+                }
             }
             Destroy(this.gameObject);
         }
@@ -94,7 +104,7 @@ public class Bullet : MonoBehaviour, IHit
         if (_timdToDestroy < 0) Destroy(this.gameObject);
     }
 
-    private void Move()
+    private void MovePos()
     {
         transform.position += _dir * _speed;
     }
@@ -107,5 +117,17 @@ public class Bullet : MonoBehaviour, IHit
     void OnDestroy()
     {
         ServiceLoacator.Unregister(this);
+    }
+
+    public void Stop(float time)
+    {
+        _isHit = true;
+        StartCoroutine(CountHitStop(time));
+    }
+
+    IEnumerator CountHitStop(float time)
+    {
+        yield return new WaitForSeconds(time);
+        _isHit = false;
     }
 }
