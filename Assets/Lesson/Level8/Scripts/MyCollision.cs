@@ -32,7 +32,6 @@ public struct MyCollision
             var widthSum = Mathf.Abs(myObjWidth - width);
             var heightSum = Mathf.Abs(myObjHeight - height);
 
-            Debug.Log($"xdir = {xDir} widthSum = {widthSum} ydir = {yDir} heithtSum = {heightSum}");
             if (xDir <= widthSum && yDir <= heightSum)
             {
                    hitObj.Add(obj);

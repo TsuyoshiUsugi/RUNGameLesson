@@ -27,18 +27,11 @@ public class LaserGun : MonoBehaviour
         Debug.Log($"H{myObjHeight} W{myObjWidth}");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-        Shoot();
-    }
-
     /// <summary>
     /// レーザーを発射する処理
     /// 12フレーム後にoff
     /// </summary>
-    IEnumerator ShootLaser()
+    public IEnumerator ShootLaser()
     {
         _laser.SetActive(true);
         var target = new List<GameObject>();

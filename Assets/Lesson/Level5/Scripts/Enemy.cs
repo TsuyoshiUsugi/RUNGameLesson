@@ -8,7 +8,7 @@ using System.Threading;
 
 /// <summary>
 /// 敵オブジェクトに付ける行動用スクリプト
-/// プレイヤーとの距離がX以下になると画面←弾を撃[つ
+/// プレイヤーとの距離がX以下になると画面←弾を撃つ
 /// </summary>
 public class Enemy : MonoBehaviour, IHit, IMovable
 {

@@ -72,15 +72,19 @@ public class Bullet : MonoBehaviour, IHit, IMovable
 
             CallHit(target);
         }
-        else
+        else if (_bulletType == BulletType.Circle)
         {
             var target = MyCollision.CircleCollision(this.gameObject, _targets);
+            Debug.Log(_targets.Count);
+            target.ForEach(a => Debug.Log(a));
 
             CallHit(target);
         }
 
         void CallHit(List<GameObject> target)
         {
+            if (target.Count == 0) return;
+
             foreach (var obj in target)
             {
                 Debug.Log(obj.name);

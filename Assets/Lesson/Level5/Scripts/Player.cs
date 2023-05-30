@@ -13,6 +13,9 @@ public class Player : MonoBehaviour, IHit
     [SerializeField] GameObject _bullet;
     [SerializeField] GameObject _laserGun;
 
+    float _inputShootKeyTime = 0;
+    float _inputLimit = 1;
+
     [Header("ノックバック")]
     [SerializeField] float _knockBackPow = 1;
     [SerializeField] int _knockBackFrame = 8;
@@ -59,9 +62,24 @@ public class Player : MonoBehaviour, IHit
 
     void GetInput()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKey(KeyCode.Z))
         {
-            Shot();
+            _inputShootKeyTime += Time.deltaTime;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Z))
+        {
+            //タイマーが一定以上なら
+            if (_inputShootKeyTime > _inputLimit) 
+            {
+                LaserShot();
+            }
+            else
+            {
+                BulletShot();
+            }
+
+            _inputShootKeyTime = 0;
         }
 
         if (Input.GetKey(KeyCode.A))
@@ -90,7 +108,8 @@ public class Player : MonoBehaviour, IHit
         Rotate();
     }
 
-    void Shot()
+
+    void BulletShot()
     {
         var bullet = Instantiate(_bullet, transform.position, transform.rotation);
         var enemies = new List<GameObject>();
@@ -102,6 +121,11 @@ public class Player : MonoBehaviour, IHit
 
         var dir = (_mouseCursor.transform.position - transform.position).normalized;
         bullet.GetComponent<Bullet>().InitializedBullet(enemies, dir);
+    }
+
+    void LaserShot()
+    {
+        StartCoroutine(_laserGun.GetComponent<LaserGun>().ShootLaser());
     }
 
     void Move(bool right)
