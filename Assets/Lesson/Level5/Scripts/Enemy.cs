@@ -5,7 +5,6 @@ using UnityEngine;
 using UniRx;
 using Cysharp.Threading.Tasks;
 using System.Threading;
-using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// 敵オブジェクトに付ける行動用スクリプト
@@ -110,7 +109,6 @@ public class Enemy : MonoBehaviour, IHit, IMovable
 
     IEnumerator KnockBack(Vector3 dir)
     {
-
         for (int i = 0; i < _knockBackFrame; i++)
         {
             this.transform.position += (transform.position - dir).normalized * _knockBackPow * Time.deltaTime;
@@ -127,6 +125,7 @@ public class Enemy : MonoBehaviour, IHit, IMovable
 
     public void Stop(float time)
     {
+        Debug.Log("Stop");
         _isHit = true;
         StartCoroutine(nameof(HitStop), time);
     }

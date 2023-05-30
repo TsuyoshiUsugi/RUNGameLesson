@@ -54,7 +54,8 @@ public class LaserGun : MonoBehaviour
 
             if (obj.GetComponent<Enemy>())
             {
-                ServiceLocator.ResolveAll<IMovable>().ForEach(enemy => enemy.Stop(_hitStopTime));
+                var enemies = ServiceLocator.ResolveAll<Enemy>();
+                enemies.ForEach(enemy => enemy.gameObject.GetComponent<IMovable>().Stop(_hitStopTime));
             }
         }
 
