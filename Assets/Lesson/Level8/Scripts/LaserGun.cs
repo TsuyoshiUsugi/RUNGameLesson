@@ -42,8 +42,8 @@ public class LaserGun : MonoBehaviour
     {
         _laser.SetActive(true);
         var target = new List<GameObject>();
-        ServiceLoacator.ResolveAll<Enemy>().ForEach(enemy => target.Add(enemy.gameObject));
-        ServiceLoacator.ResolveAll<Bullet>().ForEach(bullet => target.Add(bullet.gameObject));
+        ServiceLocator.ResolveAll<Enemy>().ForEach(enemy => target.Add(enemy.gameObject));
+        ServiceLocator.ResolveAll<Bullet>().ForEach(bullet => target.Add(bullet.gameObject));
 
         var hit = MyCollision.CollisionEnter(_laser.gameObject, target);
         hit.ForEach(hit => hit.GetComponent<IHit>().Hit(_damage, transform.position));
@@ -54,7 +54,7 @@ public class LaserGun : MonoBehaviour
 
             if (obj.GetComponent<Enemy>())
             {
-                ServiceLoacator.ResolveAll<IMovable>().ForEach(enemy => enemy.Stop(_hitStopTime));
+                ServiceLocator.ResolveAll<IMovable>().ForEach(enemy => enemy.Stop(_hitStopTime));
             }
         }
 

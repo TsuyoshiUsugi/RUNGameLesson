@@ -241,6 +241,9 @@ MonoBehaviour:
   _mouseCursor: {fileID: 1115434517}
   _bullet: {fileID: 5328368329373452871, guid: feaefc9f16d83f1498311c7c93dc4da9, type: 3}
   _laserGun: {fileID: 815513647}
+  _knockBackPow: 10
+  _knockBackFrame: 8
+  _isKnockBack: 0
   _jumpHeight: 1.5
   _jumpTime: 0.5
   _isJumping: 0
@@ -328,6 +331,21 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7294893343390393434, guid: 08d518ec81b23f84699c093c176d56e0, type: 3}
   m_PrefabInstance: {fileID: 1613964997}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &815513648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815513647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a7e929aa12f7a843beb56288a2c7547, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _laser: {fileID: 0}
+  _damage: 3
+  _onKeyDownTimer: 0
 --- !u!1 &1115434517
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,8 +504,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1117447707}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 28.75, y: 0.75, z: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 28.75, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -640,7 +658,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: LaserGun
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7485930057096843402, guid: 08d518ec81b23f84699c093c176d56e0, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 08d518ec81b23f84699c093c176d56e0, type: 3}
 --- !u!4 &1613964998 stripped
 Transform:

@@ -33,7 +33,7 @@ public class Bullet : MonoBehaviour, IHit, IMovable
 
     void Awake()
     {
-        ServiceLoacator.Register(this);
+        ServiceLocator.Register(this);
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ public class Bullet : MonoBehaviour, IHit, IMovable
 
                 if (obj.GetComponent<Enemy>())
                 {
-                    ServiceLoacator.ResolveAll<IMovable>().ForEach(enemy => enemy.Stop(_hitStopTime));
+                    ServiceLocator.ResolveAll<IMovable>().ForEach(enemy => enemy.Stop(_hitStopTime));
                 }
             }
             Destroy(this.gameObject);
@@ -116,7 +116,7 @@ public class Bullet : MonoBehaviour, IHit, IMovable
 
     void OnDestroy()
     {
-        ServiceLoacator.Unregister(this);
+        ServiceLocator.Unregister(this);
     }
 
     public void Stop(float time)

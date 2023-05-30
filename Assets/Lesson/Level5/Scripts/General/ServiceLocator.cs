@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ServiceLoacator
+public class ServiceLocator
 {
     static readonly Dictionary<Type, List<object>> _container;
 
-    static ServiceLoacator() => _container = new Dictionary<Type, List<object>>();
+    static ServiceLocator() => _container = new Dictionary<Type, List<object>>();
 
     /// <summary>
     /// インスタンス取得

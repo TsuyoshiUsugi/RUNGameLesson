@@ -42,7 +42,7 @@ public class Enemy : MonoBehaviour, IHit, IMovable
 
     void Awake()
     {
-        ServiceLoacator.Register(this);
+        ServiceLocator.Register(this);
     }
 
     // Start is called before the first frame update
@@ -53,8 +53,8 @@ public class Enemy : MonoBehaviour, IHit, IMovable
             _isShoot.Where(x => x == true).Subscribe(_ => Shoot()).AddTo(this);
             _cancellationTokenSource = new CancellationTokenSource();
         }
-        _player = ServiceLoacator.ResolveAll<Player>()[0];
-        _playerObj.Add(ServiceLoacator.ResolveAll<Player>()[0].gameObject);
+        _player = ServiceLocator.ResolveAll<Player>()[0];
+        _playerObj.Add(ServiceLocator.ResolveAll<Player>()[0].gameObject);
     }
 
     private void Update()
@@ -120,7 +120,7 @@ public class Enemy : MonoBehaviour, IHit, IMovable
 
     void OnDestroy()
     {
-        ServiceLoacator.Unregister(this);
+        ServiceLocator.Unregister(this);
 
         if (_cancellationTokenSource != null) _cancellationTokenSource.Cancel();
     }

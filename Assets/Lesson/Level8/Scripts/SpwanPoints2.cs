@@ -22,7 +22,7 @@ public class SpwanPoints2 : MonoBehaviour
         }
 
         //現状プレイヤーは一人なので[0]
-        _player = ServiceLoacator.ResolveAll<Player>()[0];
+        _player = ServiceLocator.ResolveAll<Player>()[0];
     }
 
     /// <summary>

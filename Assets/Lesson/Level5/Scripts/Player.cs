@@ -18,7 +18,7 @@ public class Player : MonoBehaviour, IHit
     [SerializeField] int _knockBackFrame = 8;
     Gravity _gravity;
     List<Enemy> _enemy;
-    bool _isKnockBack = false;
+    [SerializeField] bool _isKnockBack = false;
 
     //ÉWÉÉÉìÉvä÷òA
     [SerializeField] float _jumpHeight = 1.5f; //Ç«ÇÍÇ≠ÇÁÇ¢ÇÃçÇÇ≥Ç‹Ç≈îÚÇ‘Ç©
@@ -30,7 +30,7 @@ public class Player : MonoBehaviour, IHit
 
     void Awake()
     {
-        ServiceLoacator.Register(this);
+        ServiceLocator.Register(this);
     }
 
     private void Start()
@@ -94,7 +94,7 @@ public class Player : MonoBehaviour, IHit
     {
         var bullet = Instantiate(_bullet, transform.position, transform.rotation);
         var enemies = new List<GameObject>();
-        _enemy = ServiceLoacator.ResolveAll<Enemy>();
+        _enemy = ServiceLocator.ResolveAll<Enemy>();
         foreach (var enemy in _enemy)
         {
             enemies.Add(enemy.gameObject);
@@ -173,6 +173,7 @@ public class Player : MonoBehaviour, IHit
         for (int i = 0; i < _knockBackFrame; i++)
         {
             this.transform.position += (transform.position - dir).normalized * _knockBackPow * Time.deltaTime;
+            Debug.Log((transform.position - dir).normalized * _knockBackPow * Time.deltaTime);
             yield return null;
         }
         _isKnockBack = false;
@@ -180,7 +181,7 @@ public class Player : MonoBehaviour, IHit
 
     private void OnDisable()
     {
-        ServiceLoacator.Register(this);
+        ServiceLocator.Register(this);
     }
 
     void OnBecameInvisible()
