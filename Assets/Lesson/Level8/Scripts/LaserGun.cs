@@ -38,8 +38,9 @@ public class LaserGun : MonoBehaviour
         ServiceLocator.ResolveAll<Enemy>().ForEach(enemy => target.Add(enemy.gameObject));
         ServiceLocator.ResolveAll<Bullet>().ForEach(bullet => target.Add(bullet.gameObject));
 
-        var laserStartPos = (Vector2)transform.position;
-        var laserEndPos = (Vector2)(transform.position + new Vector3(_laser.GetComponent<SpriteRenderer>().bounds.size.x, 0, 0));
+        var laserStartPos = (Vector2)transform.localPosition;
+        //var laserEndPos = (Vector2)(transform.localPosition + new Vector3(_laser.GetComponent<SpriteRenderer>().bounds.size.x, 0, 0));
+        var laserEndPos = (Vector2)(transform.localPosition + this.transform.rotation * Vector3.right * 30);
 
         List<GameObject> hit = new List<GameObject>();
 
