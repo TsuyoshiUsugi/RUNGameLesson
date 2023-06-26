@@ -5,6 +5,7 @@ using UnityEngine;
 using UniRx;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using Cysharp.Threading.Tasks.Triggers;
 
 /// <summary>
 /// 敵オブジェクトに付ける行動用スクリプト
@@ -96,7 +97,8 @@ public class Enemy : MonoBehaviour, IHit, IMovable
         {
             var bullet = Instantiate(_bullet, transform.position, transform.rotation);
             var targetList = new List<GameObject>() { _player.gameObject };
-            bullet.GetComponent<Bullet>().InitializedBullet(targetList, Vector3.left);
+            var dir = (_player.transform.position - transform.position).normalized;
+            bullet.GetComponent<Bullet>().InitializedBullet(targetList, dir);
             await UniTask.Delay(TimeSpan.FromSeconds(_shootDur), cancellationToken: _cancellationTokenSource.Token);
         }
     }
