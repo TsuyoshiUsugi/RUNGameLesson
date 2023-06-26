@@ -41,16 +41,29 @@ public class LaserGun : MonoBehaviour
         var laserStartPos = (Vector2)transform.position;
         var laserEndPos = (Vector2)(transform.position + new Vector3(_laser.GetComponent<SpriteRenderer>().bounds.size.x, 0, 0));
 
+        List<GameObject> hit = new List<GameObject>();
+
         for (int i = 0; i < target.Count; i++)
         {
+            var isHit = false;
+
             var targetRenderer = target[i].GetComponent<SpriteRenderer>();
-            var lTop = target[i].GetComponent<SpriteRenderer>().bounds.max - 
+            var lTop = targetRenderer.bounds.max - new Vector3(targetRenderer.bounds.size.x, 0, 0);
+            var rTop = targetRenderer.bounds.max;
+            var lBottom = targetRenderer.bounds.min;
+            var rBottom = targetRenderer.bounds.min + new Vector3(targetRenderer.bounds.size.x, 0, 0);
+
+            if (MyCollision.CrossLineCollision(laserStartPos, laserEndPos, lTop, rTop)) isHit = true;
+            if (MyCollision.CrossLineCollision(laserStartPos, laserEndPos, rTop, rBottom)) isHit = true;
+            if (MyCollision.CrossLineCollision(laserStartPos, laserEndPos, lBottom, rBottom)) isHit = true;
+            if (MyCollision.CrossLineCollision(laserStartPos, laserEndPos, lTop, lBottom)) isHit = true;
+
+            if (isHit)
+            {
+                hit.Add(target[i]);
+            }
+
         }
-
-        var hit = MyCollision.CollisionEnter(_laser.gameObject, target);
-
-
-
         hit.ForEach(hit => hit.GetComponent<IHit>().Hit(_damage, transform.position));
 
         foreach (var obj in hit)
