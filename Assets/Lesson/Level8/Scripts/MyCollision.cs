@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public struct MyCollision
+public class MyCollision
 {
     /// <summary>
     /// お互いが矩形の時の接触検知関数
@@ -83,7 +81,34 @@ public struct MyCollision
             }
 
         }
-        
         return hitObj;
+    }
+
+    /// <summary>
+    /// レーザー銃用の当たり判定クラス
+    /// 線分と線分の各辺の交差判定を行う
+    /// </summary>
+    /// <param name="myObject"></param>
+    /// <param name="otherObjects"></param>
+    /// <returns></returns>
+    public static bool CrossLineCollision(Vector2 lineStart, Vector2 lineEnd, Vector2 line2Start, Vector2 line2End)
+    {  
+        Vector2 line = lineEnd - lineStart;
+        Vector2 line2 = line2End - line2Start;
+
+        return LineAndLine(line, line2Start - lineStart) * LineAndLine(line, line2End - lineStart) < 0 &&
+               LineAndLine(line2, lineStart - line2Start) * LineAndLine(line2, lineEnd - line2Start) < 0;
+    }
+
+    /// <summary>
+    /// 二次元ベクトルの外積を返す(本当は外積は二次元ベクトルでは定義されない)
+    /// ここではZ成分の値を交差しているか判定するのに使うためにZの値を返す
+    /// </summary>
+    /// <param name="line1"></param>
+    /// <param name="line2"></param>
+    /// <returns></returns>
+    static float LineAndLine(Vector2 line1, Vector2 line2)
+    {
+        return line1.x * line2.y - line1.y * line2.x;
     }
 }
