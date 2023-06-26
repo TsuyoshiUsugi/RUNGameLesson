@@ -21,6 +21,7 @@ public class Enemy : MonoBehaviour, IHit, IMovable
     [SerializeField] float _moveSpeed = 1;
 
     bool _isHit = false;
+    bool _active = false;
     float _laserHitStopTime = 0.25f;
     float _bulletHitStopTime = 0.08f;
 
@@ -59,8 +60,14 @@ public class Enemy : MonoBehaviour, IHit, IMovable
     private void Update()
     {
         if (_isHit) return;
+        if (!_player) return;
 
         if (this.transform.position.x - _player.transform.position.x <= _detectionDistance)
+        {
+            _active = true;
+        }
+        
+        if (_active)
         {
             if (_type == EnemyType.Shoot) _isShoot.Value = true;
 

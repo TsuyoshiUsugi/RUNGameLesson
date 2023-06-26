@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IHit
 {
-    float _hp = 5;
+    [SerializeField] float _hp = 5;
     float _speed = 0.1f;
     [SerializeField] Vector3 _mousePos = new Vector3();
 
